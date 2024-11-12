@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -49,9 +50,10 @@ int main()
     {
         auto it = find_if(begin(doctori), end(doctori), [&p](const Doctor& d) {return p.Specializare == d.Specializare; });
         if (it != end(doctori))
-            cout << p.IdProblema << " Acceptat\n";
-        else
-            cout << p.IdProblema << " Respins\n";
+        {
+            cout << it->IdDoctor << " " << p.IdProblema << endl;
+            doctori.erase(it);
+        }
     }
     return 0;
 }
