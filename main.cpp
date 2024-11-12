@@ -21,6 +21,12 @@ int main()
 {
     ifstream inFile("input.txt");
 
+    if (!inFile)
+    {
+        cerr << "Fisierul de intrare nu poate fi deschis!" << endl;
+        return EXIT_FAILURE;
+    }
+
     int nr_probleme;
     inFile >> nr_probleme;
     vector<Problema> probleme(nr_probleme);
@@ -36,6 +42,8 @@ int main()
     {
         inFile >> doctori[i].IdDoctor >> doctori[i].Specializare;
     }
+
+    inFile.close();
 
     for (const auto& p : probleme)
     {
