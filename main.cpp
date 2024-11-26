@@ -24,7 +24,6 @@ struct Doctor
 int main()
 {
     ifstream inFile("input4_bonus.txt");
-    // fisier input gresit, nr_probleme are trebui sa fie 7, nu 6
 
     if (!inFile)
     {
@@ -37,7 +36,7 @@ int main()
     vector<Problema> probleme(nr_probleme);
     for (int i = 0; i < nr_probleme; i++)
     {
-        inFile >> probleme[i].IdProblema >> probleme[i].Specializare>>probleme[i].durata;
+        inFile >> probleme[i].IdProblema >> probleme[i].Specializare >> probleme[i].durata;
     }
 
     int nr_doctori;
@@ -50,12 +49,12 @@ int main()
 
     inFile.close();
 
-    for (const auto& p : probleme)
+    for (const auto &p: probleme)
     {
-        auto it = find_if(begin(doctori), end(doctori), [&p](const Doctor& d) 
-            {
-                return p.Specializare == d.Specializare && d.available_time >= p.durata; 
-            });
+        auto it = find_if(begin(doctori), end(doctori), [&p](const Doctor &d)
+        {
+            return p.Specializare == d.Specializare && d.available_time >= p.durata;
+        });
         if (it != end(doctori))
         {
             it->solved_problems.push_back(p.IdProblema);
@@ -63,16 +62,15 @@ int main()
         }
     }
 
-    for (const auto& d : doctori)
+    for (const auto &d: doctori)
     {
         if (!d.solved_problems.empty())
         {
             cout << d.IdDoctor << " " << d.solved_problems.size() << " ";
-            for (const auto& s_p : d.solved_problems)
+            for (const auto &s_p: d.solved_problems)
                 cout << s_p << " ";
             cout << endl;
         }
     }
-
     return 0;
 }
