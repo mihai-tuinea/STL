@@ -32,7 +32,7 @@ struct Doctor
 
 int main()
 {
-    ifstream inFile("input3.txt");
+    ifstream inFile("input.txt");
 
     if (!inFile)
     {
