@@ -7,98 +7,100 @@
 
 using namespace std;
 
-struct Problema
+struct Problem
 {
-    string IdProblema;
-    string Specializare;
-    int oraSosire;
-    int durata;
-    int prioritate;
+    string name;
+    string skill;
+    int arrival{};
+    int duration{};
+    int priority{};
 
-    bool operator<(const Problema &other) const
+    bool operator<(const Problem &other) const
     {
-        if (this->oraSosire != other.oraSosire)
-            return this->oraSosire > other.oraSosire;
-        if (this->prioritate != other.prioritate)
-            return this->prioritate < other.prioritate;
-        return this->durata > other.durata;
+        if (this->arrival != other.arrival)
+            return this->arrival > other.arrival;
+        if (this->priority != other.priority)
+            return this->priority < other.priority;
+        return this->duration > other.duration;
     }
 };
 
 struct Doctor
 {
-    string IdDoctor;
-    int nrSpecializari;
-    vector<string> specializari;
-    int program = 9;
-    vector<pair<string, int> > solved_problems;
+    string name;
+    int numSkills{};
+    int workingHours = 9;
+    vector<string> skills;
+    vector<pair<string, int> > solvedProblems;
 };
 
 int main()
 {
-    ifstream inFile("input4_bonus.txt");
+    ifstream fin("input4_bonus.txt");
 
-    if (!inFile)
+    if (!fin)
     {
         cerr << "Fisierul de intrare nu poate fi deschis!" << endl;
         return EXIT_FAILURE;
     }
 
-    int nr_probleme;
-    inFile >> nr_probleme;
-    vector<Problema> probleme(nr_probleme);
-    priority_queue<Problema> pq;
-    for (int i = 0; i < nr_probleme; i++)
+    int numProblems;
+    fin >> numProblems;
+    vector<Problem> problems(numProblems);
+    priority_queue<Problem> pq;
+    for (int i = 0; i < numProblems; i++)
     {
-        inFile >> probleme[i].IdProblema >> probleme[i].Specializare >> probleme[i].oraSosire >> probleme[i].durata >>
-                probleme[i].prioritate;
-        pq.push(probleme[i]);
+        fin >> problems[i].name >> problems[i].skill >> problems[i].arrival >> problems[i].duration >>
+                problems[i].priority;
+        pq.push(problems[i]);
     }
 
-    int nr_doctori;
-    inFile >> nr_doctori;
-    vector<Doctor> doctori(nr_doctori);
-    for (int i = 0; i < nr_doctori; i++)
+    int numDoctors;
+    fin >> numDoctors;
+    vector<Doctor> doctors(numDoctors);
+    for (int i = 0; i < numDoctors; i++)
     {
-        inFile >> doctori[i].IdDoctor >> doctori[i].nrSpecializari;
-        for (int j = 0; j < doctori[i].nrSpecializari; j++)
+        fin >> doctors[i].name >> doctors[i].numSkills;
+        for (int j = 0; j < doctors[i].numSkills; j++)
         {
-            string s;
-            inFile >> s;
-            doctori[i].specializari.push_back(s);
+            string skill;
+            fin >> skill;
+            doctors[i].skills.push_back(skill);
         }
     }
 
-    inFile.close();
+    fin.close();
 
     while (!pq.empty())
     {
-        const Problema p = pq.top(); // !!COPYING AND REFERENCING GIVE DIFFERENT RESULTS!!
+        const Problem currentProblem = pq.top();
         pq.pop();
-        if (p.oraSosire + p.durata > 17)
+        if (currentProblem.arrival + currentProblem.duration > 17)
             continue;
-        auto it = find_if(begin(doctori), end(doctori), [&p](const Doctor &d)
-        {
-            bool found_specializare = false;
-            for (const auto &spec: d.specializari)
-                if (spec == p.Specializare)
-                    found_specializare = true;
-            return found_specializare && d.program <= p.oraSosire;
+        auto it = find_if(begin(doctors), end(doctors), [&currentProblem](const Doctor &doc) {
+            bool solvable = false;
+            for (const auto &spec: doc.skills)
+                if (spec == currentProblem.skill)
+                {
+                    solvable = true;
+                    break;
+                }
+            return solvable && doc.workingHours <= currentProblem.arrival;
         });
-        if (it != end(doctori))
+        if (it != end(doctors))
         {
-            it->solved_problems.emplace_back(p.IdProblema, p.oraSosire);
-            it->program = p.oraSosire + p.durata;
+            it->solvedProblems.emplace_back(currentProblem.name, currentProblem.arrival);
+            it->workingHours = currentProblem.arrival + currentProblem.duration;
         }
     }
 
-    for (const auto &d: doctori)
+    for (const auto &doc: doctors)
     {
-        if (!d.solved_problems.empty())
+        if (!doc.solvedProblems.empty())
         {
-            cout << d.IdDoctor << " " << d.solved_problems.size() << " ";
-            for (const auto &s_p: d.solved_problems)
-                cout << s_p.first << " " << s_p.second << " ";
+            cout << doc.name << " " << doc.solvedProblems.size() << " ";
+            for (const auto &[name, arrival]: doc.solvedProblems)
+                cout << name << " " << arrival << " ";
             cout << endl;
         }
     }

@@ -1,1 +1,4 @@
-CMakeLists.txt not found in C:\Users\mihai\Documents\CLion_projects\STL Select CMakeLists.txt
+"C:\Program Files\JetBrains\CLion 2024.3.2\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "MinGW Makefiles" -S C:\Users\mihai\CLionProjects\STL -B C:\Users\mihai\CLionProjects\STL\cmake-build-debug
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Users/mihai/CLionProjects/STL/cmake-build-debug
